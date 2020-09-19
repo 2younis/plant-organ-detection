@@ -1,0 +1,7 @@
+*.jpg
+*.txt
+*.xml
+
+__pycache__
+/output
+/detections/evaluations/
