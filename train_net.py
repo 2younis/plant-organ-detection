@@ -7,8 +7,7 @@ from detectron2.engine import DefaultTrainer, default_argument_parser, default_s
 
 from dataset.dataset import get_hrb_dicts, get_frhrb_dicts
 from configs.config import add_hrb_config, add_frhrb_config
-from evaluator import HrbEvaluator
-
+from utils.evaluator import HrbEvaluator
 from utils.parameters import *
 import os
 
