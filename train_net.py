@@ -1,49 +1,45 @@
-
 from detectron2.data import DatasetCatalog, MetadataCatalog
 from detectron2.checkpoint import DetectionCheckpointer
 from detectron2.config import get_cfg
-from detectron2.utils.logger import setup_logger
-from detectron2.engine import DefaultTrainer, default_argument_parser, default_setup, launch
+from detectron2.engine import DefaultTrainer
+from detectron2.engine import default_argument_parser, default_setup, launch
 
 from dataset.dataset import get_hrb_dicts, get_frhrb_dicts
-from configs.config import add_hrb_config, add_frhrb_config
+from configs.config import add_hrb_config
 from utils.evaluator import HrbEvaluator
 from utils.parameters import *
-import os
 
 
 class Trainer(DefaultTrainer):
     @classmethod
     def build_evaluator(cls, cfg, dataset_name):
-        output_folder = os.path.join(cfg.OUTPUT_DIR, "inference")
-        return HrbEvaluator(dataset_name, cfg)  
+        return HrbEvaluator(dataset_name, cfg)
 
-    
+
 def setup(args):
     """
     Create configs and perform basic setups.
     """
     cfg = get_cfg()
     cfg.merge_from_file(MODEL_CONFIG)
-    #cfg.merge_from_list(args.opts)
+    # cfg.merge_from_list(args.opts)
     add_hrb_config(cfg)
     cfg.freeze()
     default_setup(cfg, args)
-    
+
     return cfg
 
 
 def main(args):
     for d in ["train", "test"]:
         DatasetCatalog.register("hrb_" + d, lambda d=d: get_hrb_dicts(d))
-        MetadataCatalog.get("hrb_" + d).set(thing_classes=['leaf', 'flower', 'fruit', 'seed', 'stem', 'root'],
-            dirname="./", year= 2012, split=d)
+        MetadataCatalog.get("hrb_" + d).set(thing_classes=ORGAN_LIST,
+                                            dirname="./", year=2012, split=d)
     for d in ['fr']:
         DatasetCatalog.register(d + 'hrb', lambda d=d: get_frhrb_dicts(d))
-        MetadataCatalog.get(d + 'hrb').set(thing_classes=['leaf', 'flower', 'fruit', 'seed', 'stem', 'root'])
+        MetadataCatalog.get(d + 'hrb').set(thing_classes=ORGAN_LIST)
 
     cfg = setup(args)
-
 
     if args.eval_only:
         model = Trainer.build_model(cfg)

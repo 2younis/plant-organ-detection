@@ -13,7 +13,8 @@ from detectron2.utils.visualizer import ColorMode, Visualizer
 
 
 class VisualizationDemo(object):
-    def __init__(self, cfg, instance_mode=ColorMode.SEGMENTATION, parallel=False):
+    def __init__(self, cfg, instance_mode=ColorMode.SEGMENTATION,
+                 parallel=False):
         """
         Args:
             cfg (CfgNode):
@@ -46,11 +47,12 @@ class VisualizationDemo(object):
         """
         vis_output = None
         predictions, inputs = self.predictor(image)
-        #print(predictions)
-        #exit()
+        # print(predictions)
+        # exit()
         # Convert image from OpenCV BGR format to Matplotlib RGB format.
         image = image[:, :, ::-1]
-        visualizer = Visualizer(image, self.metadata, instance_mode=self.instance_mode)
+        visualizer = Visualizer(image, self.metadata,
+                                instance_mode=self.instance_mode)
         if "panoptic_seg" in predictions:
             panoptic_seg, segments_info = predictions["panoptic_seg"]
             vis_output = visualizer.draw_panoptic_seg_predictions(
@@ -63,7 +65,8 @@ class VisualizationDemo(object):
                 )
             if "instances" in predictions:
                 instances = predictions["instances"].to(self.cpu_device)
-                vis_output = visualizer.draw_instance_predictions(predictions=instances)
+                vis_output = visualizer.draw_instance_predictions(
+                    predictions=instances)
 
         return predictions, vis_output, inputs
 
@@ -80,8 +83,8 @@ class VisualizationDemo(object):
         Visualizes predictions on frames of the input video.
 
         Args:
-            video (cv2.VideoCapture): a :class:`VideoCapture` object, whose source can be
-                either a webcam or a video file.
+            video (cv2.VideoCapture): a :class:`VideoCapture` object,
+            whose source can be either a webcam or a video file.
 
         Yields:
             ndarray: BGR visualizations of each video frame.
@@ -97,10 +100,12 @@ class VisualizationDemo(object):
                 )
             elif "instances" in predictions:
                 predictions = predictions["instances"].to(self.cpu_device)
-                vis_frame = video_visualizer.draw_instance_predictions(frame, predictions)
+                vis_frame = video_visualizer.draw_instance_predictions(
+                    frame, predictions)
             elif "sem_seg" in predictions:
                 vis_frame = video_visualizer.draw_sem_seg(
-                    frame, predictions["sem_seg"].argmax(dim=0).to(self.cpu_device)
+                    frame, predictions["sem_seg"].argmax(
+                        dim=0).to(self.cpu_device)
                 )
 
             # Converts Matplotlib RGB format to OpenCV BGR format
@@ -172,9 +177,11 @@ class AsyncPredictor:
         for gpuid in range(max(num_gpus, 1)):
             cfg = cfg.clone()
             cfg.defrost()
-            cfg.MODEL.DEVICE = "cuda:{}".format(gpuid) if num_gpus > 0 else "cpu"
+            cfg.MODEL.DEVICE = "cuda:{}".format(
+                gpuid) if num_gpus > 0 else "cpu"
             self.procs.append(
-                AsyncPredictor._PredictWorker(cfg, self.task_queue, self.result_queue)
+                AsyncPredictor._PredictWorker(
+                    cfg, self.task_queue, self.result_queue)
             )
 
         self.put_idx = 0

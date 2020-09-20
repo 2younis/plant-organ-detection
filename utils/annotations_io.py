@@ -3,7 +3,8 @@ from lxml import etree as et
 
 class Writer:
 
-    def __init__(self, foldername, filename, imgSize, verified = False, localImgPath=None, databaseSrc='Unknown'):
+    def __init__(self, foldername, filename, imgSize, verified=False,
+                 localImgPath=None, databaseSrc='Unknown'):
 
         self.foldername = foldername
         self.filename = filename
@@ -28,14 +29,16 @@ class Writer:
             pose = et.SubElement(object_item, 'pose')
             pose.text = "Unspecified"
             truncated = et.SubElement(object_item, 'truncated')
-            if int(float(each_object['ymax'])) == int(float(self.imgSize[0])) or (int(float(each_object['ymin']))== 1):
-                truncated.text = "1" # max == height or min
-            elif (int(float(each_object['xmax']))==int(float(self.imgSize[1]))) or (int(float(each_object['xmin']))== 1):
-                truncated.text = "1" # max == width or min
+            if (int(float(each_object['ymax'])) == int(float(self.imgSize[0]))
+                    or (int(float(each_object['ymin'])) == 1)):
+                truncated.text = "1"  # max == height or min
+            elif ((int(float(each_object['xmax'])) == int(float(self.imgSize[1])))
+                    or (int(float(each_object['xmin'])) == 1)):
+                truncated.text = "1"  # max == width or min
             else:
                 truncated.text = "0"
             difficult = et.SubElement(object_item, 'difficult')
-            difficult.text = str( bool(each_object['difficult']) & 1 )
+            difficult.text = str(bool(each_object['difficult']) & 1)
             score = et.SubElement(object_item, 'score')
             score.text = str(each_object['score'])
 
@@ -91,7 +94,8 @@ class Writer:
 
         et.indent(root, space="    ")
 
-        prettifyResult = et.tostring(root, pretty_print=True).decode("utf-8")#.replace("  ".encode(), "\t".encode())
+        prettifyResult = et.tostring(root, pretty_print=True).decode(
+            "utf-8")  # .replace("  ".encode(), "\t".encode())
 
         with open(targetFile, 'w') as f:
             f.write(prettifyResult)
@@ -110,7 +114,7 @@ class Reader:
             xml_file = f.read()
 
         xmltree = et.fromstring(xml_file)
-        
+
         self.filename = xmltree.find('filename').text
         self.folder = xmltree.find('folder').text
         self.path = xmltree.find('path').text
@@ -121,7 +125,7 @@ class Reader:
         depth = size.find('depth').text
 
         self.imgSize = [height, width, depth]
-        
+
         try:
             verified = xmltree.attrib['verified']
             if verified == 'yes':
@@ -133,8 +137,8 @@ class Reader:
             label = object_iter.find('name').text
             difficult = object_iter.find('difficult').text
             truncated = object_iter.find('truncated').text
-            
-            #self.addShape(label, bndbox)
+
+            # self.addShape(label, bndbox)
             bndbox = object_iter.find("bndbox")
             xmin = (float(bndbox.find('xmin').text))
             ymin = (float(bndbox.find('ymin').text))
@@ -143,8 +147,7 @@ class Reader:
 
             corners = [xmin, ymin, xmax, ymax]
             self.shapes.append((label, corners, difficult, truncated))
-            
-        
+
     def addShape(self, label, bndbox):
         xmin = (float(bndbox.find('xmin').text))
         ymin = (float(bndbox.find('ymin').text))
@@ -154,4 +157,3 @@ class Reader:
         corners = [xmin, ymin, xmax, ymax]
 
         self.shapes.append((label, corners, ))
-

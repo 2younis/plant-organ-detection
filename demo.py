@@ -14,10 +14,10 @@ from detectron2.data import DatasetCatalog, MetadataCatalog
 from detectron2.evaluation import COCOEvaluator
 
 from utils.predictor import VisualizationDemo
-
-from configs.config import add_hrb_config, add_frhrb_config
+from configs.config import add_hrb_config
 from dataset.dataset import get_hrb_dicts, get_frhrb_dicts
 from utils.extract_annotations import annotator
+from utils.parameters import *
 
 # constants
 WINDOW_NAME = "COCO detections"
@@ -41,20 +41,24 @@ def setup_cfg(args):
 
 
 def get_parser():
-    parser = argparse.ArgumentParser(description="Detectron2 demo for builtin models")
+    parser = argparse.ArgumentParser(
+        description="Detectron2 demo for builtin models")
     parser.add_argument(
         "--config-file",
         default="configs/faster_rcnn_R_50_FPN.yaml",
         metavar="FILE",
         help="path to config file",
     )
-    parser.add_argument("--webcam", action="store_true", help="Take inputs from webcam.")
+    parser.add_argument("--webcam", action="store_true",
+                        help="Take inputs from webcam.")
     parser.add_argument("--video-input", help="Path to video file.")
-    parser.add_argument("--input", nargs="+", help="A list of space separated input images")
+    parser.add_argument("--input", nargs="+",
+                        help="A list of space separated input images")
     parser.add_argument(
         "--output",
         help="A file or directory to save output visualizations. "
-        "If not given, will show output in an OpenCV window.", default='detections/FR_eval_detect/'
+        "If not given, will show output in an OpenCV window.",
+        default='detections/FR_eval_detect/'
     )
 
     parser.add_argument(
@@ -76,14 +80,14 @@ if __name__ == "__main__":
 
     for d in ["train", "test"]:
         DatasetCatalog.register("hrb_" + d, lambda d=d: get_hrb_dicts(d))
-        MetadataCatalog.get("hrb_" + d).set(thing_classes=['leaf', 'flower', 'fruit', 'seed', 'stem', 'root'],
-            thing_colors=[(0,0,255),(128,0,0),(255,0,255),(255,255,0),(0,128,0),(128,128,128)],
-            dirname="./", year= 2012, split=d)
-    
+        MetadataCatalog.get("hrb_" + d).set(thing_classes=ORGAN_LIST,
+                                            thing_colors=BOUNDING_BOX_COLORS,
+                                            dirname="./", year=2012, split=d)
+
     for d in ["fr"]:
         DatasetCatalog.register(d + "hrb", lambda d=d: get_frhrb_dicts(d))
-        MetadataCatalog.get(d + "hrb").set(thing_classes=['leaf', 'flower', 'fruit', 'seed', 'stem', 'root'],
-            thing_colors=[(0,0,255),(128,0,0),(255,0,255),(255,255,0),(0,128,0),(128,128,128)])
+        MetadataCatalog.get(d + "hrb").set(thing_classes=ORGAN_LIST,
+                                           thing_colors=BOUNDING_BOX_COLORS)
 
     mp.set_start_method("spawn", force=True)
     args = get_parser().parse_args()
@@ -107,26 +111,30 @@ if __name__ == "__main__":
             start_time = time.time()
             predictions, visualized_output, inputs = demo.run_on_image(img)
             image_id = os.path.splitext(os.path.basename(path))[0]
-            inputs['image_id'] = image_id            
-            evaluator.process([inputs],[predictions])            
-            annotator(cfg, predictions, img, path, args.output)            
+            inputs['image_id'] = image_id
+            evaluator.process([inputs], [predictions])
+            annotator(cfg, predictions, img, path, args.output)
             logger.info(
                 "{}: detected {} instances in {:.2f}s".format(
-                    path, len(predictions["instances"]), time.time() - start_time
+                    path, len(predictions["instances"]
+                              ), time.time() - start_time
                 )
             )
 
             if args.output:
                 if os.path.isdir(args.output):
                     assert os.path.isdir(args.output), args.output
-                    out_filename = os.path.join(args.output, os.path.basename(path))
+                    out_filename = os.path.join(
+                        args.output, os.path.basename(path))
                 else:
-                    assert len(args.input) == 1, "Please specify a directory with args.output"
+                    assert len(
+                        args.input) == 1, "Please specify a directory with args.output"
                     out_filename = args.output
                 visualized_output.save(out_filename)
             else:
                 cv2.namedWindow(WINDOW_NAME, cv2.WINDOW_NORMAL)
-                cv2.imshow(WINDOW_NAME, visualized_output.get_image()[:, :, ::-1])
+                cv2.imshow(
+                    WINDOW_NAME, visualized_output.get_image()[:, :, ::-1])
                 if cv2.waitKey(0) == 27:
                     break  # esc to quit
         evaluator.evaluate()
@@ -156,8 +164,6 @@ if __name__ == "__main__":
             assert not os.path.isfile(output_fname), output_fname
             output_file = cv2.VideoWriter(
                 filename=output_fname,
-                # some installation of opencv may not support x264 (due to its license),
-                # you can try other format (e.g. MPEG)
                 fourcc=cv2.VideoWriter_fourcc(*"x264"),
                 fps=float(frames_per_second),
                 frameSize=(width, height),

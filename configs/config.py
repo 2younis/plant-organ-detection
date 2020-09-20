@@ -1,5 +1,3 @@
-from detectron2.config import CfgNode
-
 def add_hrb_config(cfg):
 
     cfg.DATASETS.TRAIN = ("hrb_train",)
@@ -20,6 +18,7 @@ def add_hrb_config(cfg):
     cfg.MODEL.ANCHOR_GENERATOR.ASPECT_RATIOS = [[0.5, 1.0, 2.0]]
 
     # cfg.SOLVER.MAX_ITER = 10
+
 def add_frhrb_config(cfg):
 
     cfg.DATASETS.TEST = ("frhrb",)
