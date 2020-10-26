@@ -1,27 +1,7 @@
 def add_hrb_config(cfg):
 
-    cfg.DATASETS.TRAIN = ("hrb_train",)
-    cfg.DATASETS.TEST = ("frhrb",)
-
-    cfg.DATALOADER.NUM_WORKERS = 2
-
-    cfg.SOLVER.IMS_PER_BATCH = 4
-    cfg.SOLVER.BASE_LR = 0.0025
-
-    cfg.MODEL.ROI_HEADS.NUM_CLASSES = 6
-    cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE = 512
-
-    cfg.MODEL.RPN.NMS_THRESH = 0.6
-    cfg.MODEL.ROI_HEADS.NMS_THRESH_TEST = 0.25
-
-    cfg.MODEL.ANCHOR_GENERATOR.SIZES = [[32, 64, 128, 256, 512, 1024]]
-    cfg.MODEL.ANCHOR_GENERATOR.ASPECT_RATIOS = [[0.5, 1.0, 2.0]]
-
-    # cfg.SOLVER.MAX_ITER = 10
-
-def add_frhrb_config(cfg):
-
-    cfg.DATASETS.TEST = ("frhrb",)
+    cfg.DATASETS.TRAIN = ('hrb_paris_all',)
+    cfg.DATASETS.TEST = ('hrb_fr',)
 
     cfg.DATALOADER.NUM_WORKERS = 2
 

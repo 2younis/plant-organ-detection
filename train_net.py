@@ -24,6 +24,20 @@ def setup(args):
     cfg.merge_from_file(MODEL_CONFIG)
     # cfg.merge_from_list(args.opts)
     add_hrb_config(cfg)
+
+    if 'DATASETS.TRAIN' in args.opts:
+        train_dataset = args.opts[args.opts.index('DATASETS.TRAIN') + 1]
+        cfg.DATASETS.TRAIN = (train_dataset,)
+
+    if 'DATASETS.TEST' in args.opts:
+        test_dataset = args.opts[args.opts.index('DATASETS.TEST') + 1]
+        cfg.DATASETS.TEST = (test_dataset,)
+
+    if 'SOLVER.MAX_ITER' in args.opts:
+        max_iter = int(args.opts[args.opts.index('SOLVER.MAX_ITER') + 1])
+        cfg.SOLVER.MAX_ITER = max_iter
+        cfg.STEPS = ((max_iter * 2) // 3, (max_iter * 8) // 9)
+
     cfg.freeze()
     default_setup(cfg, args)
 
@@ -31,13 +45,13 @@ def setup(args):
 
 
 def main(args):
-    for d in ["train", "test"]:
-        DatasetCatalog.register("hrb_" + d, lambda d=d: get_hrb_dicts(d))
-        MetadataCatalog.get("hrb_" + d).set(thing_classes=ORGAN_LIST,
-                                            dirname="./", year=2012, split=d)
+    for d in ['all', 'train', 'val']:
+        DatasetCatalog.register('hrb_paris_' + d, lambda d=d: get_hrb_dicts(d))
+        MetadataCatalog.get('hrb_paris_' + d).set(
+            thing_classes=ORGAN_LIST, split=d)
     for d in ['fr']:
-        DatasetCatalog.register(d + 'hrb', lambda d=d: get_frhrb_dicts(d))
-        MetadataCatalog.get(d + 'hrb').set(thing_classes=ORGAN_LIST)
+        DatasetCatalog.register('hrb_' + d, lambda d=d: get_frhrb_dicts(d))
+        MetadataCatalog.get('hrb_' + d).set(thing_classes=ORGAN_LIST)
 
     cfg = setup(args)
 

@@ -76,9 +76,10 @@ def get_frhrb_dicts(d):
     index_len = len(image_index)
     counter = 1
 
+    print('Creating Herbarium Senckenbergianum annotation dictionaries...')
     for idx in image_index:
         progress = (counter / index_len) * 100
-        print(' Progress:', f'{progress:.5f}%', end='\r')
+        print(' Progress:', f'{progress:.1f}%', end='\r')
         record = {}
 
         filename = os.path.join(img_dir, idx + image_ext)
@@ -116,5 +117,7 @@ def get_frhrb_dicts(d):
 
         record["annotations"] = objs
         dataset_dicts.append(record)
+
+    print()
 
     return dataset_dicts
