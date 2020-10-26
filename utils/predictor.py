@@ -46,9 +46,8 @@ class VisualizationDemo(object):
             vis_output (VisImage): the visualized image output.
         """
         vis_output = None
-        predictions, inputs = self.predictor(image)
-        # print(predictions)
-        # exit()
+        predictions = self.predictor(image)
+
         # Convert image from OpenCV BGR format to Matplotlib RGB format.
         image = image[:, :, ::-1]
         visualizer = Visualizer(image, self.metadata,
@@ -68,7 +67,7 @@ class VisualizationDemo(object):
                 vis_output = visualizer.draw_instance_predictions(
                     predictions=instances)
 
-        return predictions, vis_output, inputs
+        return predictions, vis_output
 
     def _frame_from_video(self, video):
         while video.isOpened():
