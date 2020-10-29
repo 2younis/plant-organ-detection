@@ -13,13 +13,13 @@ def move_HS():
     if not Path(extracted_Dir).exists():
         print('The extracted Dataset directory does not exists!')
         print('Please download and extract the Herbarium Senckenbergianum '
-              'dataset in the dataset drectory.')
+              '(FR) dataset in the dataset drectory.')
 
     else:
         Path(HRBFR_annoDir).mkdir(parents=True, exist_ok=True)
         Path(HRBFR_imgDir).mkdir(parents=True, exist_ok=True)
 
-        print('Moving Herbarium Senckenbergianum scans and annotations...',
+        print('Moving Herbarium Senckenbergianum (FR) scans and annotations...',
               flush=True)
 
         if not Path(HRBFR_detectionsDir).exists():
@@ -38,20 +38,21 @@ def move_HS():
             Path(anno_path).rename(HRBFR_annoDir + fr_id + '.xml')
             Path(img_path).rename(HRBFR_imgDir + fr_id + '.jpg')
 
-        with open(HRBFR_Dir + 'list.txt', 'w') as f:
-            for t in fr_ids:
-                f.write(t + '\n')
+        if not Path(HRBFR_Dir + 'list.txt').exists():
+            with open(HRBFR_Dir + 'list.txt', 'w') as f:
+                for t in fr_ids:
+                    f.write(t + '\n')
 
 
 def extract_annotations():
-    print('Extracting MNHN annotations...', flush=True)
+    print('Extracting MNHN Paris Herbarium annotations...', flush=True)
     with ZipFile(HRBParis_Dir + 'annotations.zip', 'r') as zip_ref:
         zip_ref.extractall(HRBParis_Dir)
 
 
 def download_imgs():
     Path(HRBParis_imgDir).mkdir(parents=True, exist_ok=True)
-    print('Downloading MNHN Herbarium scans...', flush=True)
+    print('Downloading MNHN Paris Herbarium scans...', flush=True)
     with open(HRBParis_urls, 'r', encoding="utf8", errors='ignore')as file:
         reader = csv.reader(file)
         header = next(reader)
@@ -85,20 +86,20 @@ def download_imgs():
             print(nd + '.jpg')
 
 
-def copy_eval_imgs():
-    Path(HRBParis_evalDir).mkdir(parents=True, exist_ok=True)
-    print('Moving validation scans...', flush=True)
+def copy_test_imgs():
+    Path(HRBParis_testDir).mkdir(parents=True, exist_ok=True)
+    print('Copying MNHN Paris Herbarium test scans...', flush=True)
 
-    with open(HRBParis_Dir + 'val.txt', 'r') as f:
-        eval_ids = f.read().splitlines()
+    with open(HRBParis_Dir + 'test.txt', 'r') as f:
+        test_ids = f.read().splitlines()
 
         paths = [f for f in glob(HRBParis_imgDir + '*.jpg')]
 
         for path in paths:
             gbif_id = os.path.splitext(os.path.basename(path))[0]
 
-            if gbif_id in eval_ids:
-                dest = Path(HRBParis_evalDir + gbif_id + '.jpg')
+            if gbif_id in test_ids:
+                dest = Path(HRBParis_testDir + gbif_id + '.jpg')
                 dest.write_bytes(Path(path).read_bytes())
 
 
@@ -107,4 +108,4 @@ if __name__ == '__main__':
     move_HS()
     extract_annotations()
     download_imgs()
-    copy_eval_imgs()
+    copy_test_imgs()

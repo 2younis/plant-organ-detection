@@ -6,7 +6,7 @@ ORGAN_LIST = ['leaf', 'flower', 'fruit', 'seed', 'stem', 'root']
 HRBParis_imgDir = 'dataset/HerbarParis/scans/'
 HRBParis_annoDir = 'dataset/HerbarParis/annotations/'
 HRBParis_urls = 'dataset/HerbarParis/mnhn_urls.csv'
-HRBParis_evalDir = 'dataset/HerbarParis/val/'
+HRBParis_testDir = 'dataset/HerbarParis/test/'
 HRBParis_Dir = 'dataset/HerbarParis/'
 
 HRBFR_imgDir = 'dataset/HerbarFR/scans/'

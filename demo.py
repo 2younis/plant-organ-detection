@@ -73,7 +73,7 @@ def get_parser():
 
 if __name__ == "__main__":
 
-    for d in ['all', 'train', 'val']:
+    for d in ['all', 'train', 'test']:
         DatasetCatalog.register('hrb_paris_' + d, lambda d=d: get_hrb_dicts(d))
         MetadataCatalog.get('hrb_paris_' + d).set(
             thing_classes=ORGAN_LIST, thing_colors=BOUNDING_BOX_COLORS,

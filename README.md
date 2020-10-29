@@ -48,16 +48,16 @@ For reference the directory layout of the files and modules is drawn below.
 
 ## Usage
 
-The first step for detecting plant organs, according to the paper, is training a Faster-RCNN model on the training set of MNHN Paris Herbarium dataset and evaluating it on the validation set.
+The first step for detecting plant organs, according to the paper, is training a Faster-RCNN model on the training set of MNHN Paris Herbarium dataset and evaluating it on the test set.
 
 ```sh
-$ python train_net.py DATASETS.TRAIN hrb_paris_train DATASETS.TEST hrb_paris_val SOLVER.MAX_ITER 9000
+$ python train_net.py DATASETS.TRAIN hrb_paris_train DATASETS.TEST hrb_paris_test SOLVER.MAX_ITER 9000
 ```
 
-After the model has been trained on the training set, inference can be performed on the validation set to visualize the bounding boxes for plant organs on images.
+After the model has been trained on the training set, inference can be performed on the test set to visualize the bounding boxes for plant organs on images.
 
 ```sh
-$ python demo.py --input dataset/HerbarParis/val/*.jpg --opts MODEL.WEIGHTS output/model_final.pth
+$ python demo.py --input dataset/HerbarParis/test/*.jpg --opts MODEL.WEIGHTS output/model_final.pth
 ```
 
 Then the organ detection model can be trained on all of the MNHN Paris Herbarium scans and evaluated on the Herbarium Senckenbergianum (FR) dataset by running the following script.

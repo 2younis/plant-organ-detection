@@ -45,7 +45,7 @@ def setup(args):
 
 
 def main(args):
-    for d in ['all', 'train', 'val']:
+    for d in ['all', 'train', 'test']:
         DatasetCatalog.register('hrb_paris_' + d, lambda d=d: get_hrb_dicts(d))
         MetadataCatalog.get('hrb_paris_' + d).set(
             thing_classes=ORGAN_LIST, split=d)
