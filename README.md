@@ -71,3 +71,8 @@ Likewise inference can also be performed on the Herbarium Senckenbergianum (FR) 
 ```sh
 $ python demo.py --input dataset/HerbarFR/scans/*.jpg --opts MODEL.WEIGHTS output/model_final.pth`
 ```
+A [trained model](https://github.com/2younis/plant-organ-detection/releases/download/v1.0/model_final.pth) on MNHN Paris Herbarium dataset can be downloaded directly for inference, without the need to train it again.
+
+```sh
+$ wget https://github.com/2younis/plant-organ-detection/releases/download/v1.0/model_final.pth -P output/
+```
