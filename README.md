@@ -69,7 +69,7 @@ $ python train_net.py DATASETS.TRAIN hrb_paris_all DATASETS.TEST hrb_fr
 Likewise inference can also be performed on the Herbarium Senckenbergianum (FR) dataset to visualize the detected organs on the scans.
 
 ```sh
-$ python demo.py --input dataset/HerbarFR/scans/*.jpg --opts MODEL.WEIGHTS output/model_final.pth`
+$ python demo.py --input dataset/HerbarFR/scans/*.jpg --opts MODEL.WEIGHTS output/model_final.pth
 ```
 A [trained model](https://github.com/2younis/plant-organ-detection/releases/download/v1.0/model_final.pth) on MNHN Paris Herbarium dataset can be downloaded directly for inference, without the need to train it again.
 
